@@ -1,6 +1,6 @@
 /*
  * WORLD MAP VISUALIZER
- * Author: <your name here>
+ * Author: Marc Rufeis
  * ---------------------------
  *
  * Visualizing the world!
@@ -24,18 +24,53 @@
 
 const rl = require('readline')
 const jimp = require('jimp')
+const chalk = require('chalk');
 
 clearConsole()
 
-jimp.read('world.jpg', (err, map_image) => {
+jimp.read('prag.jpg', (err, map_image) => {
   if (err) throw err;
-  map_image.resize(100,50);
+
+  // map_image.resize(550,134);
+  const terminal_width = process.stdout.columns;
+  const terminal_height = (terminal_width / 4.1044776119) * 1;
+  // map_image.resize(terminal_width, terminal_height).greyscale().contrast(1).posterize(2);
+  map_image.resize(terminal_width, terminal_height);
+
+  /*
   console.log(map_image.getPixelColor(0,0)); //gibt die Farbe des Pixels links oben zurück
   writeCharacterToConsole('#',0,0); //schreibt ein # links oben in die Konsole
+  */
 
   //----- Hier kommt euer Code hin -----
+  // IMG SIZE: 550 × 67
+  // TERMINAL SIZE: process.stdout.columns
   
+  
+  for (let x = 0; x <= terminal_width; x++) {
+  
+    for (let y = 0; y <= terminal_height; y++) {
 
+      // console.log(map_image.getPixelColor(x,y));
+      // writeCharacterToConsole('#',x,y);
+
+      //console.log(hexAToRGBA(map_image.getPixelColor(x,y)));
+      const color = jimp.intToRGBA(map_image.getPixelColor(x,y))
+      writeCharacterToConsole(chalk.rgb(color.r, color.g, color.b)('■'),x,y);
+      
+      /* if (map_image.getPixelColor(x, y) == 255) {
+        // writeCharacterToConsole('■',x,y);
+        // writeCharacterToConsole('▪️',x,y);
+        writeCharacterToConsole('#',x,y);
+      } /*else if (map_image.getPixelColor(x, y) == 4294967295) {
+        writeCharacterToConsole(' ',x,y);
+      }*/
+      
+      
+    }
+    
+  }
+  
 
 });
 
