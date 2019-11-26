@@ -1,6 +1,6 @@
 /*
  * WORLD MAP VISUALIZER
- * Author: <your name here>
+ * Author: Marc Rufeis
  * ---------------------------
  *
  * Visualizing the world!
@@ -24,28 +24,29 @@
 
 const rl = require('readline')
 const jimp = require('jimp')
+const chalk = require('chalk');
 
 clearConsole()
 
-jimp.read('world.jpg', (err, map_image) => {
+jimp.read('prag.jpg', (err, map_image) => {
   if (err) throw err;
-  map_image.resize(100,50);
-  console.log(map_image.getPixelColor(0,0)); //gibt die Farbe des Pixels links oben zurück
-  writeCharacterToConsole('#',0,0); //schreibt ein # links oben in die Konsole
 
-  //----- Hier kommt euer Code hin -----
-  
+  const terminal_width = process.stdout.columns;
+  const terminal_height = process.stdout.rows;
+  map_image.resize(terminal_width, terminal_height);
 
-
+  for (let x = 0; x <= terminal_width; x++) {
+    for (let y = 0; y <= terminal_height; y++) {
+      const color = jimp.intToRGBA(map_image.getPixelColor(x, y))
+      writeCharacterToConsole(chalk.rgb(color.r, color.g, color.b)('■'), x, y);
+    }
+  }
 });
-
-
 
 //Vorerst nur ein Platzhalter
 setInterval(function () {
-    
-},1000);
 
+}, 1000);
 
 /*
  * HELPER FUNCTIONS - DO NOT CHANGE
@@ -59,6 +60,6 @@ function clearConsole () {
 }
 
 function writeCharacterToConsole (char, x, y) {
-  rl.cursorTo(process.stdout,x,y)
+  rl.cursorTo(process.stdout, x, y)
   process.stdout.write(char)
 }
